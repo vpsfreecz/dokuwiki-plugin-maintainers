@@ -87,22 +87,34 @@ class syntax_plugin_maintainers_maintainers extends DokuWiki_Syntax_Plugin {
 
         switch ($state) {
         case DOKU_LEXER_ENTER:
-            $class = $match === 'hidden' ? 'hidden' : '';
-            $renderer->doc .= '<ul class="maintainers '.$class.'">';
+            $classes = array('maintainers');
+
+            if ($match === 'hidden')
+                $classes[] = 'hidden';
+
+            $renderer->doc .= '<ul class="'.implode(' ', $classes).'">';
             break;
 
         case DOKU_LEXER_UNMATCHED:
+            $s = '';
+
             foreach ($match as $maintainer) {
                 list($name, $info) = $maintainer;
 
                 $id = $this->getConf('user_ns').':'.$name;
-                $class = page_exists($id) ? '' : 'class="wikilink2"';
+                $exists = page_exists($id);
+                $class = $exists ? '' : 'class="wikilink2"';
 
-                $renderer->doc .= '<li>';
-                $renderer->doc .= '<a href="'.wl($id).'"'.$class.'>'.$name.'</a>';
-                $renderer->doc .= ' '.$info;
-                $renderer->doc .= '</li>';
+                $s .= '<li>';
+                $s .= '<a href="'.wl($id).'"'.$class.' ';
+                $s .= 'data-page-exists="'.($exists ? 1 : 0).'" ';
+                $s .= 'data-page-id="'.$id.'">';
+                $s .= $name.'</a>';
+                $s .= ' '.$info;
+                $s .= '</li>';
             }
+
+            $renderer->doc .= $s;
 
             break;
 
