@@ -1,4 +1,10 @@
 <?php
+/**
+ * Page Maintainers
+ *
+ * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @author  Jakub Skokan <jakub.skokan@vpsfree.cz>
+ */
 
 class syntax_plugin_maintainers_maintainers extends DokuWiki_Syntax_Plugin {
     public function getType() {

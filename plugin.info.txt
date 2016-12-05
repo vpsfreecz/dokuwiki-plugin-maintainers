@@ -1,7 +1,7 @@
 base   maintainers
 author Jakub Skokan
-email  aither@havefun.cz
-date   2016-12-03
+email  jakub.skokan@vpsfree.cz
+date   2016-12-05
 name   Page Maintainers
 desc   Define a list of maintainers for wiki pages
 url    https://www.dokuwiki.org/plugin:maintainers
