@@ -60,7 +60,21 @@ class syntax_plugin_maintainers_maintainers extends DokuWiki_Syntax_Plugin {
     }
  
     public function render($mode, Doku_Renderer $renderer, $data) {
-        if ($mode != 'xhtml' || $mode === 'metadata')
+        global $ID;
+
+        if ($mode === 'metadata') {
+            list($state, $match) = $data;
+
+            if ($state != DOKU_LEXER_UNMATCHED)
+                return;
+
+            $m = $this->loadHelper('maintainers');
+            $m->setPageMaintainers($ID, $match);
+
+            return;
+        }
+
+        if ($mode != 'xhtml')
             return false;
 
         list($state, $match) = $data;

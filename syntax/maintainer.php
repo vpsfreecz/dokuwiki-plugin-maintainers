@@ -46,7 +46,18 @@ class syntax_plugin_maintainers_maintainer extends DokuWiki_Syntax_Plugin {
     }
  
     public function render($mode, Doku_Renderer $renderer, $data) {
-        if ($mode != 'xhtml' || $mode === 'metadata')
+        global $ID;
+        
+        $helper = $this->loadHelper('maintainers');
+
+        if ($mode === 'metadata' && $data[0] == DOKU_LEXER_EXIT) {
+            $pages = $helper->getMaintainersPages(noNS($ID));
+            $renderer->current['maintained_pages'] = $pages;
+            $renderer->persistent['maintained_pages'] = $pages;
+            return;
+        }
+
+        if ($mode != 'xhtml')
             return false;
 
         list($state, $match) = $data;
@@ -72,7 +83,17 @@ class syntax_plugin_maintainers_maintainer extends DokuWiki_Syntax_Plugin {
             break;
 
         case DOKU_LEXER_EXIT:
-            $renderer->doc .= '</table></div>';
+            $pages = $helper->getMaintainersPages(noNS($ID));
+            $tmp = array();
+
+            $renderer->doc .= '<tr><th>Maintained pages:</th><td>';
+
+            foreach ($pages as $page) {
+                $tmp[] = '<a href="'.wl($page).'">'.$page.'</a>';
+            }
+
+            $renderer->doc .= implode(', ', $tmp);
+            $renderer->doc .= '</td></tr></table></div>';
             break;
         }
 
