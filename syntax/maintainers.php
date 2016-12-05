@@ -11,7 +11,7 @@ class syntax_plugin_maintainers_maintainers extends DokuWiki_Syntax_Plugin {
 
     public function connectTo($mode) {
         $this->Lexer->addEntryPattern(
-            '<maintainers>(?=.*?</maintainers>)',
+            '<maintainers.*?>(?=.*?</maintainers>)',
             $mode,
             'plugin_maintainers_maintainers'
         );
@@ -24,7 +24,7 @@ class syntax_plugin_maintainers_maintainers extends DokuWiki_Syntax_Plugin {
     public function handle($match, $state, $pos, Doku_Handler $handler) {
         switch ($state) {
         case DOKU_LEXER_ENTER:
-            return array($state, null);
+            return array($state, trim(substr($match, 12, -1)));
 
         case DOKU_LEXER_UNMATCHED:
             $lines = preg_split('/\r\n|\n|\r/', $match);
@@ -81,7 +81,8 @@ class syntax_plugin_maintainers_maintainers extends DokuWiki_Syntax_Plugin {
 
         switch ($state) {
         case DOKU_LEXER_ENTER:
-            $renderer->doc .= '<ul class="maintainers">';
+            $class = $match === 'hidden' ? 'hidden' : '';
+            $renderer->doc .= '<ul class="maintainers '.$class.'">';
             break;
 
         case DOKU_LEXER_UNMATCHED:
